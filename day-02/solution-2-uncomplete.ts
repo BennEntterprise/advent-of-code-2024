@@ -13,16 +13,8 @@ try {
 let safeCounter = 0
 const lengths = new Map<number, number>()
 lines?.forEach((line, index) => {
-    // if (index > 5) return;
+let problemDampener = 0;
   const levels = line.split(" ");
-  // Update the map with the length of counter of this line
-  const length = levels.length;
-  if (lengths.has(length)) {
-    lengths.set(length, lengths.get(length)! + 1);
-  } else {
-    lengths.set(length, 1);
-  }
-  // console.log(lengths)
 
   // Check if the line is safe,
   // it should be ALWAYS INCREASING or ALWAYS DECREASING
