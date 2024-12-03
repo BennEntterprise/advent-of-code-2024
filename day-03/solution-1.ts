@@ -30,27 +30,31 @@ try {
   let accumulator = 0
   while (chars[counter] !== undefined){
     const currentChar = chars[counter]
-    const lastSignal = signalStack[signalStack.length  - 1]
+    const stackSize = signalStack.length
+    const lastSignal = signalStack[stackSize  - 1]
 
-    if(signalStack.length === 0 && currentChar !== 'm'){
+    // Skip anything that isn't our starting signal
+    if(stackSize === 0 && currentChar !== 'm'){
       counter++
       continue;
     }
 
-    // First we reject anything we don't care about.
-    if(!signalChars.includes(currentChar)) {
-      counter+=1
+    // If our stack isn't empty, if the next signal is a bad one, we clear the stack.
+    if (stackSize > 0 && !signalChars.includes(currentChar)){
+      signalStack = []
+      counter++
       continue;
     }
 
     // Then we check on a case by case basis what to do with each character, making a decision to
     // either add it to the stack or not.
-    if (currentChar === 'm' && chars[counter + 1] === 'u' && chars[counter + 2] === 'l' && signalStack.length === 0) {
+    if (currentChar === 'm' && chars[counter + 1] === 'u' && chars[counter + 2] === 'l' && stackSize === 0) {
       signalStack.push('mul')
       counter+=3
       continue;
     }
 
+    // Push on opening parenthesis
     if(currentChar === '(' && lastSignal === 'mul'){
       signalStack.push(currentChar)
       counter++
