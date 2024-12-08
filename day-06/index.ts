@@ -11,7 +11,7 @@ function sleep(ms: number): Promise<void> {
 
 (async () => {
   try {
-    const input = fs.readFileSync(`${__dirname}/sample-puzzle-input.txt`, 'utf-8')
+    const input = fs.readFileSync(`${__dirname}/real-puzzle-input.txt`, 'utf-8')
     const area: Area = input.split('\n').map(line => line.split(''))
     
     // Find Starting Position of Guard
@@ -46,7 +46,6 @@ function sleep(ms: number): Promise<void> {
     let steps = 0; //Useful for Debugging
     while(!guardExited){
       let nextGuardLocation = calculateNewPosition(area, currentGuardLocation as GuardLocation)
-      await sleep(100)
 
       if (nextGuardLocation === null) {
         guardExited = true;
@@ -62,11 +61,13 @@ function sleep(ms: number): Promise<void> {
       }
       steps++
 
-      console.log(area.map(line => line.join('')).join('\n'))
+      // console.log(area.map(line => line.join('')).join('\n'))
       
       // Since we just left the post, mark the previous location as visited.
-      area[currentGuardLocation!.position!.y][currentGuardLocation!.position!.x] = "X"
-      visitedLocationCount++;
+      if(area[currentGuardLocation!.position!.y][currentGuardLocation!.position!.x] !== "X"){
+        area[currentGuardLocation!.position!.y][currentGuardLocation!.position!.x] = "X"
+        visitedLocationCount++;
+      }
       currentGuardLocation = nextGuardLocation
     }
     console.log(`Guard Exited, total spots visited: ${visitedLocationCount}, total steps: ${steps}`)
