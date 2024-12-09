@@ -1,5 +1,7 @@
 import fs from 'fs'
 
+type NumberArray = Array<number>
+
 try {
   // Get the Disk Map String
   const diskMapString = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf-8')
@@ -18,6 +20,11 @@ try {
    * */ 
 
   // Split the diskMapString into constituents: files and freeSpaces
+  const [fileSizes, freeSpaceSizes]  = splitToConstituentSizes(diskMapString)
+  // console.log({
+  //   fileSizes,
+  //   freeSpaceSizes
+  // })
 
   // Create the diskMapBlocks
 
@@ -68,10 +75,24 @@ function createDiskMapBlocks(files: any[], emptySpaces: any[]): Array<any>{
   return []
 }
 
-function splitToConstituents(diskMapString: string): [Array<any>, Array<any>]{
-  const files: any[] =[]
-  const emptySpaces: any[] = []
-  return [files, emptySpaces]
+/**
+ * @description an array to split a disk map string into file blocks and empty block arrays
+ * @param diskMapString 
+ * @returns 
+ */
+function splitToConstituentSizes(diskMapString: string): [NumberArray, NumberArray]{
+  const filesSizes: NumberArray = []
+  const emptySpaceSizes: NumberArray = []
+  const diskMapArray = diskMapString.split('');
+
+  for(let i = 0; i < diskMapArray.length; i++){
+    if(i % 2 == 0) {
+      filesSizes.push(Number(diskMapArray[i]))
+    } else {
+      emptySpaceSizes.push(Number(diskMapArray[i]))
+    }
+  }
+  return [filesSizes, emptySpaceSizes]
 }
 
 
