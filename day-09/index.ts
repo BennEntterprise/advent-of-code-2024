@@ -1,6 +1,10 @@
 import fs from 'fs'
+import { splitToConstituentSizes } from './utils/splitToConstituentSizes'
+import { createDiskMapBlocks } from './utils/createDiskMapBlocks'
 
-type NumberArray = Array<number>
+export type NumberArray = Array<number>
+export type DotArray = Array<'.'>
+export type DiskMapBlocks = Array<number | '.'>
 
 try {
   // Get the Disk Map String
@@ -21,17 +25,18 @@ try {
 
   // Split the diskMapString into constituents: files and freeSpaces
   const [fileSizes, freeSpaceSizes]  = splitToConstituentSizes(diskMapString)
-  // console.log({
-  //   fileSizes,
-  //   freeSpaceSizes
-  // })
+  console.log({
+    fileSizes,
+    freeSpaceSizes
+  })
 
   // Create the diskMapBlocks
+  const diskMapBlocks = createDiskMapBlocks(fileSizes, freeSpaceSizes)
+  console.log('diskMapBlocks', diskMapBlocks.join(''))
 
   // Reshape the memory
 
   // Calculate checksum
-
 
 } catch (e: any) {
   console.error(e)
@@ -69,32 +74,6 @@ function reshapeMemoryRightToLeft( diskMapBlocks: Array<string>): Array<string>{
   throw Error('ReshapeMemoryRightToLeft needs implementation')
   return dmb
 }
-
-
-function createDiskMapBlocks(files: any[], emptySpaces: any[]): Array<any>{
-  return []
-}
-
-/**
- * @description an array to split a disk map string into file blocks and empty block arrays
- * @param diskMapString 
- * @returns 
- */
-function splitToConstituentSizes(diskMapString: string): [NumberArray, NumberArray]{
-  const filesSizes: NumberArray = []
-  const emptySpaceSizes: NumberArray = []
-  const diskMapArray = diskMapString.split('');
-
-  for(let i = 0; i < diskMapArray.length; i++){
-    if(i % 2 == 0) {
-      filesSizes.push(Number(diskMapArray[i]))
-    } else {
-      emptySpaceSizes.push(Number(diskMapArray[i]))
-    }
-  }
-  return [filesSizes, emptySpaceSizes]
-}
-
 
 function memoryShapingComplete(diskMapBlocks: Array<any>):boolean{
   // Consume the map from both sides pushing the items into stacks,
