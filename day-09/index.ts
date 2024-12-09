@@ -25,16 +25,21 @@ try {
 
   // Split the diskMapString into constituents: files and freeSpaces
   const [fileSizes, freeSpaceSizes]  = splitToConstituentSizes(diskMapString)
-  console.log({
-    fileSizes,
-    freeSpaceSizes
-  })
-
+  
   // Create the diskMapBlocks
   const diskMapBlocks = createDiskMapBlocks(fileSizes, freeSpaceSizes)
-  console.log('diskMapBlocks', diskMapBlocks.join(''))
+  
+  console.log({
+    fileSizes,
+    freeSpaceSizes,
+    diskMapBlocks: diskMapBlocks.join('')
+  })
 
   // Reshape the memory
+  const cleanedMemory = reshapeMemoryRightToLeft(diskMapBlocks)
+  console.log({
+    cleanedMemory: cleanedMemory.join('')
+  })
 
   // Calculate checksum
 
@@ -63,33 +68,78 @@ function calculateCheckSum(diskMapBlocks: Array<string|number>){
   return sum;
 }
 
+/**
+ * @description a function to move all '.' to the right and all numbers to the left by swapping the first '.' found in the left with the first numeral found on the right and so on, utilizs the memoryShapingComplete to know when to stop
+ * @param diskMapBlocks 
+ * @returns 
+ */
+function reshapeMemoryRightToLeft( diskMapBlocks: DiskMapBlocks): DiskMapBlocks{
+  console.log('Reshaping memory...')
+  let reshapedMemory = diskMapBlocks;
+  let reshapedMemoryComplete = memoryShapingComplete(reshapedMemory)
+  let reshapingCounter = 0;
+  while(reshapingCounter < diskMapBlocks.length){
+    // Find the first '.' from the left and the first number from the right
+    let leftIndex = reshapedMemory.findIndex((block) => block === '.')
+    let fakeRightIndex = reshapedMemory.slice().reverse().findIndex((block) => block !== '.') 
+    let actualRightIndex = reshapedMemory.length - fakeRightIndex - 1
 
-function reshapeMemoryRightToLeft( diskMapBlocks: Array<string>): Array<string>{
-  // How to do this recursively until only ..... are on the right?
-  let dmb = diskMapBlocks
-  while(!memoryShapingComplete(dmb)){
-    // Do some shaping
-    throw Error('Need memory shaping logic in reshapeMemoryRightToLeft')
+    // Swap the two values
+    if(leftIndex !== -1 && actualRightIndex !== -1){
+      let temp = reshapedMemory[leftIndex]
+      reshapedMemory[leftIndex] = reshapedMemory[actualRightIndex]
+      reshapedMemory[actualRightIndex] = temp
+    }
+    reshapedMemoryComplete = memoryShapingComplete(reshapedMemory)
+    reshapingCounter++
+    // console.log({
+    //   reshapedMemory: reshapedMemory.join(''),
+    //   reshapedMemoryComplete
+    // })
   }
-  throw Error('ReshapeMemoryRightToLeft needs implementation')
-  return dmb
+  console.log('Reshaping complete')
+  return reshapedMemory
 }
 
-function memoryShapingComplete(diskMapBlocks: Array<any>):boolean{
+function memoryShapingComplete(diskMapBlocks: DiskMapBlocks):boolean{
   // Consume the map from both sides pushing the items into stacks,
   // The left stack should always contain numbers, if not return false
   // The right stack should always contain '.', if not return false.
   // If you can continue such that left.length + right.length === diskMapBlocks.length, then return true.
+
   const leftStack: number[] = []
   const rightStack: string[] = []
-  let exhaustedMap = leftStack.length + rightStack.length === diskMapBlocks.length
 
-  while(!exhaustedMap){
-    // Check to make sure the current characters can be pushed in...
-    throw Error('memoryShapingComplete needs implementation')
-    // Update the Exhausted Map flag
-    exhaustedMap = leftStack.length + rightStack.length === diskMapBlocks.length
+  // Check to make sure the current characters can be pushed in...
+  for(let i = 0; i < diskMapBlocks.length; i++){
+    if(typeof diskMapBlocks[i] === 'number'){
+      leftStack.push(diskMapBlocks[i] as number)
+      continue
+    } else {
+      break;
+    }
+  }
+  
+  for(let j = diskMapBlocks.length -1; j >= 0; j --){
+    if(diskMapBlocks[j] === '.'){
+      rightStack.unshift(diskMapBlocks[j] as string)
+      continue;
+    } else {
+      break
+    }
   }
 
-  return false;
+  // Update the Exhausted Map flag
+  // console.log({
+  //   leftStack: leftStack.join('' ),
+  //   rightStack: rightStack.join('')
+  // })
+
+  if(
+    leftStack.length + rightStack.length === diskMapBlocks.length
+  ){
+    return true;
+  }else {
+    return false
+  }
 }
