@@ -26,6 +26,3 @@ try {
 } catch (e: any) {
   console.error(e)
 }
-
-
-
