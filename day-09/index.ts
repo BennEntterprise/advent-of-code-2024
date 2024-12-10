@@ -11,7 +11,7 @@ export type DiskMapBlocks = Array<number | '.'>
 try {
   // Get the Disk Map String
   const diskMapString = fs.readFileSync(`${__dirname}/puzzle-input.txt`, 'utf-8')
-  console.log('diskMapString', diskMapString)
+  // console.log('diskMapString', diskMapString)
   /**
    *  Important Concepts
    * 
@@ -31,17 +31,17 @@ try {
   // Create the diskMapBlocks
   const diskMapBlocks = createDiskMapBlocks(fileSizes, freeSpaceSizes)
   
-  console.log({
-    fileSizes,
-    freeSpaceSizes,
-    diskMapBlocks: diskMapBlocks.join('')
-  })
+  // console.log({
+  //   fileSizes,
+  //   freeSpaceSizes,
+  //   diskMapBlocks: diskMapBlocks.join('')
+  // })
 
   // Reshape the memory
   const cleanedMemory = reshapeMemoryRightToLeft(diskMapBlocks)
-  console.log({
-    cleanedMemory: cleanedMemory.join('')
-  })
+  // console.log({
+  //   cleanedMemory: cleanedMemory.join('')
+  // })
 
   // Calculate checksum
   const checkSum = calculateCheckSum(cleanedMemory)

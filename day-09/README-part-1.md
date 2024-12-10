@@ -46,3 +46,5 @@ In this example, the checksum is the sum of these, 1928.
 
 Compact the amphipod's hard drive using the process he requested. What is the resulting filesystem checksum? (Be careful copy/pasting the input for this puzzle; it is a single, very long line.)
 
+// TOO HIGH: 6446899528622
+// Correct Answer 6446899523367

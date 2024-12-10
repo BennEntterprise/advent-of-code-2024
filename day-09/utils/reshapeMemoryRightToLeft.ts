@@ -9,27 +9,30 @@ import { memoryShapingComplete } from "./memoryShapingComplete";
 export function reshapeMemoryRightToLeft(diskMapBlocks: DiskMapBlocks): DiskMapBlocks {
   console.log('Reshaping memory...');
   let reshapedMemory = diskMapBlocks;
-  let reshapedMemoryComplete = memoryShapingComplete(reshapedMemory);
-  let reshapingCounter = 0;
-  while (reshapingCounter < diskMapBlocks.length) {
-    // Find the first '.' from the left and the first number from the right
-    let leftIndex = reshapedMemory.findIndex((block) => block === '.');
-    let fakeRightIndex = reshapedMemory.slice().reverse().findIndex((block) => block !== '.');
-    let actualRightIndex = reshapedMemory.length - fakeRightIndex - 1;
+  let leftIndex = 0;
+  let rightIndex = reshapedMemory.length - 1;
 
-    // Swap the two values
-    if (leftIndex !== -1 && actualRightIndex !== -1) {
-      let temp = reshapedMemory[leftIndex];
-      reshapedMemory[leftIndex] = reshapedMemory[actualRightIndex];
-      reshapedMemory[actualRightIndex] = temp;
+  while (leftIndex < rightIndex) {
+    // Find the first '.' from the left
+    while (leftIndex < reshapedMemory.length && reshapedMemory[leftIndex] !== '.') {
+      leftIndex++;
     }
-    reshapedMemoryComplete = memoryShapingComplete(reshapedMemory);
-    reshapingCounter++;
-    // console.log({
-    //   reshapedMemory: reshapedMemory.join(''),
-    //   reshapedMemoryComplete
-    // })
+
+    // Find the first number from the right
+    while (rightIndex >= 0 && reshapedMemory[rightIndex] === '.') {
+      rightIndex--;
+    }
+
+    // Swap the two values if valid indices are found
+    if (leftIndex < rightIndex) {
+      let temp = reshapedMemory[leftIndex];
+      reshapedMemory[leftIndex] = reshapedMemory[rightIndex];
+      reshapedMemory[rightIndex] = temp;
+      leftIndex++;
+      rightIndex--;
+    }
   }
+
   console.log('Reshaping complete');
   return reshapedMemory;
 }
