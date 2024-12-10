@@ -1,6 +1,8 @@
 import fs from 'fs'
 import { splitToConstituentSizes } from './utils/splitToConstituentSizes'
 import { createDiskMapBlocks } from './utils/createDiskMapBlocks'
+import { reshapeMemoryRightToLeft } from './utils/reshapeMemoryRightToLeft'
+import { calculateCheckSum } from './utils/calculateCheckSum'
 
 export type NumberArray = Array<number>
 export type DotArray = Array<'.'>
@@ -8,7 +10,7 @@ export type DiskMapBlocks = Array<number | '.'>
 
 try {
   // Get the Disk Map String
-  const diskMapString = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf-8')
+  const diskMapString = fs.readFileSync(`${__dirname}/puzzle-input.txt`, 'utf-8')
   console.log('diskMapString', diskMapString)
   /**
    *  Important Concepts
@@ -42,104 +44,14 @@ try {
   })
 
   // Calculate checksum
+  const checkSum = calculateCheckSum(cleanedMemory)
+  console.log({
+    checkSum
+  })
 
 } catch (e: any) {
   console.error(e)
 }
 
 
-/**
- * @param diskMapBlocks 
- * @returns 
- */
-function calculateCheckSum(diskMapBlocks: Array<string|number>){
-  const sum = diskMapBlocks.reduce((previousValue: string|number, currentValue: string|number, currentIndex: number, array: (string|number)[]) => {
-    console.log(previousValue, currentValue, currentIndex, array)
-    throw Error('CalculateCheckSum needs implementation')
-    return 0
-  }, 0)
 
-  let intSum : number;
-  try {
-    intSum =parseInt(sum as string) as number
-  } catch (e) {
-    throw Error('Error parsing checksum string --> number')
-  }
-  return sum;
-}
-
-/**
- * @description a function to move all '.' to the right and all numbers to the left by swapping the first '.' found in the left with the first numeral found on the right and so on, utilizs the memoryShapingComplete to know when to stop
- * @param diskMapBlocks 
- * @returns 
- */
-function reshapeMemoryRightToLeft( diskMapBlocks: DiskMapBlocks): DiskMapBlocks{
-  console.log('Reshaping memory...')
-  let reshapedMemory = diskMapBlocks;
-  let reshapedMemoryComplete = memoryShapingComplete(reshapedMemory)
-  let reshapingCounter = 0;
-  while(reshapingCounter < diskMapBlocks.length){
-    // Find the first '.' from the left and the first number from the right
-    let leftIndex = reshapedMemory.findIndex((block) => block === '.')
-    let fakeRightIndex = reshapedMemory.slice().reverse().findIndex((block) => block !== '.') 
-    let actualRightIndex = reshapedMemory.length - fakeRightIndex - 1
-
-    // Swap the two values
-    if(leftIndex !== -1 && actualRightIndex !== -1){
-      let temp = reshapedMemory[leftIndex]
-      reshapedMemory[leftIndex] = reshapedMemory[actualRightIndex]
-      reshapedMemory[actualRightIndex] = temp
-    }
-    reshapedMemoryComplete = memoryShapingComplete(reshapedMemory)
-    reshapingCounter++
-    // console.log({
-    //   reshapedMemory: reshapedMemory.join(''),
-    //   reshapedMemoryComplete
-    // })
-  }
-  console.log('Reshaping complete')
-  return reshapedMemory
-}
-
-function memoryShapingComplete(diskMapBlocks: DiskMapBlocks):boolean{
-  // Consume the map from both sides pushing the items into stacks,
-  // The left stack should always contain numbers, if not return false
-  // The right stack should always contain '.', if not return false.
-  // If you can continue such that left.length + right.length === diskMapBlocks.length, then return true.
-
-  const leftStack: number[] = []
-  const rightStack: string[] = []
-
-  // Check to make sure the current characters can be pushed in...
-  for(let i = 0; i < diskMapBlocks.length; i++){
-    if(typeof diskMapBlocks[i] === 'number'){
-      leftStack.push(diskMapBlocks[i] as number)
-      continue
-    } else {
-      break;
-    }
-  }
-  
-  for(let j = diskMapBlocks.length -1; j >= 0; j --){
-    if(diskMapBlocks[j] === '.'){
-      rightStack.unshift(diskMapBlocks[j] as string)
-      continue;
-    } else {
-      break
-    }
-  }
-
-  // Update the Exhausted Map flag
-  // console.log({
-  //   leftStack: leftStack.join('' ),
-  //   rightStack: rightStack.join('')
-  // })
-
-  if(
-    leftStack.length + rightStack.length === diskMapBlocks.length
-  ){
-    return true;
-  }else {
-    return false
-  }
-}
