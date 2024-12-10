@@ -5,7 +5,7 @@ import { getTrailHeadScore } from './utils/getTrailScore'
 export type Grid = Array<Array<number>>
 
 try {
-  const input = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf-8')
+  const input = fs.readFileSync(`${__dirname}/puzzle-input.txt`, 'utf-8')
   const grid: Grid = input.split('\n').map(row => row.split('').map(n => parseInt(n)))
 
 
