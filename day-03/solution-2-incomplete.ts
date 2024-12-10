@@ -23,7 +23,10 @@ try {
 
   // Repeat this process until there are no characters left.
   const numbers = [...'0123456789']
+  const doDontSignal = ['d','o', 'n' ,"'", 't'
+  ]
   const signalChars = ['m', 'u', 'l', '(', ',', ')', ...numbers]
+  let shouldDo = true
 
   let signalStack: Array<string> = []
   let counter = 0;
@@ -32,6 +35,26 @@ try {
     const currentChar = chars[counter]
     const stackSize = signalStack.length
     const lastSignal = signalStack[stackSize  - 1]
+
+    if(shouldDo) {
+      // Check to see if we need to bail early 
+      const substr = chars.slice(counter,counter+7).join()
+      if(substr === "don't()"){
+        shouldDo = false;
+        counter+=7;
+        continue;
+      } 
+    } else{
+      const substr = chars.slice(counter, counter+4).join()
+      if(substr  === "do()") {
+        shouldDo = true;
+        counter+=4
+        continue
+      } else {
+        counter++
+        continue
+      }
+    }
 
     // Skip anything that isn't our starting signal
     if(stackSize === 0 && currentChar !== 'm'){
@@ -76,7 +99,9 @@ try {
     if(currentChar ===')' && !isNaN(Number(lastSignal))){
       signalStack.push(currentChar);
       const product = handleMultiplication(signalStack);
-      accumulator+=product
+      if(shouldDo) {
+        accumulator+=product
+      }
       signalStack = []
       counter++
       continue;
