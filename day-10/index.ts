@@ -2,11 +2,11 @@ import fs from 'fs'
 import { findAltitudesAtSetHeight } from './utils/findAltitudesAtSetHeight'
 import { getTrailHeadScore } from './utils/getTrailScore'
 
-export type Grid = Array<Array<Number>>
+export type Grid = Array<Array<number>>
 
 try {
   const input = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf-8')
-  const grid: Grid = input.split('\n').map(row => row.split('').map(Number))
+  const grid: Grid = input.split('\n').map(row => row.split('').map(n => parseInt(n)))
 
 
   // Gather All of our starting points.
