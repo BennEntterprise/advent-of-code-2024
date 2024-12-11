@@ -3,7 +3,7 @@ import fs from 'fs';
 type StonesList = Array<number>
 
 try {
-  const input = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf8');  
+  const input = fs.readFileSync(`${__dirname}/puzzle-input.txt`, 'utf8');  
   let stonesList: StonesList = input.split(/\s/).map(Number)
   console.log(stonesList)
   
