@@ -1,4 +1,4 @@
-import { Game } from "..";
+import { Game } from "../types";
 
 export function parseGames(gameSpecs: Array<Array<string>>): Array<Game> {
   return gameSpecs.map((gs: Array<string>, index: number) => {
@@ -11,12 +11,11 @@ export function parseGames(gameSpecs: Array<Array<string>>): Array<Game> {
 
     // Split the B button description into stuff we can use
     const [_descriptorB, BxDesc, ByDesc] = directiveB.split(/:|,/);
-    const bIncX = parseInt(AxDesc.split('+')[1]);
-    const bIncY = parseInt(AyDesc.split('+')[1]);
+    const bIncX = parseInt(BxDesc.split('+')[1]);
+    const bIncY = parseInt(ByDesc.split('+')[1]);
 
     // Parse the Prize Location
     const [_label, _labelX, xVal, _labelY, yVal] = prizeLocation.split(/:|,|=/);
-
 
     return {
       gameId: index,
@@ -28,12 +27,11 @@ export function parseGames(gameSpecs: Array<Array<string>>): Array<Game> {
         b: {
           x: bIncX,
           y: bIncY,
-          c: 'booger'
         },
-        prizeLocation: {
-          x: parseInt(xVal),
-          y: parseInt(yVal)
-        }
+      },
+      prizeLocation: {
+        x: parseInt(xVal),
+        y: parseInt(yVal)
       }
     } as Game;
   });
