@@ -21,6 +21,14 @@ try {
   for(let game of games){
     results.push(tryToWinPrize(game))
   }
+
+  // For each result, if it's a winner, add to the total cost
+  const totalCost: number = results.reduce((acc, currValue, currentIndex, entireArray ) => {
+    if(currValue.wonPrize){
+      // Return the accumulator + the prize cost
+    }
+    return acc
+  },0)
   console.log(results)
 } catch (error) {
   console.error(error);
