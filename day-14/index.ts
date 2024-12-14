@@ -10,8 +10,8 @@ import { drawRobots } from './utils/drawRobots'
 // https://adventofcode.com/2024/day/14
 
 const mapSize = {
-  x: 11,
-  y: 7
+  x: 101,
+  y: 103
 }
 const room = Array.from({ length: mapSize.y }, () => Array(mapSize.x).fill('.'));
 
@@ -21,7 +21,7 @@ function sleep(ms: number) {
 
 (async () => {
 try {
-  const input = fs.readFileSync(`${__dirname}/sample-input.txt`, 'utf8');  
+  const input = fs.readFileSync(`${__dirname}/puzzle-input.txt`, 'utf8');  
 
   let robots = getStartingPositions(input);
 
@@ -31,9 +31,8 @@ try {
     console.clear()
     robots = advanceRobots(robots, room)
     // drawRobots(robots, room)
-    console.log(seconds)
     seconds++
-    await sleep(1)
+    await sleep(10)
   }
 
   // Split room into quadrants

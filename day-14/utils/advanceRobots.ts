@@ -22,10 +22,8 @@ export function advanceRobots(robots: Robot[], grid: Array<Array<any>>){
       (nextYPos % grid.length) < 0 ? (nextYPos % grid.length) + grid.length : nextYPos % grid.length
     ]
 
-    console.log(robot)
     robot.position.x = moxXPos
     robot.position.y = modYPos
-    console.log(robot)
     return robot
   })
 }
