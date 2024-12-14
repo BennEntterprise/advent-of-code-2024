@@ -1,9 +1,16 @@
-import { Game } from '../types'
+import { Game, GameResult } from '../types'
 
 // Setup Linear Algebra Package
 const mathjs = require("mathjs");
-export function tryToWinPrize(game: Game) {
-  const wonPrize = false;
+
+const costs = {
+  a: 3,
+  b: 1,
+};
+
+const has100Limit = !process.env.PART2
+
+export function tryToWinPrize(game: Game): GameResult {
   // /https://www.npmjs.com/package/linear-algebrag
   // Need to find a solution
   // Button A: X+94, Y+34
@@ -26,9 +33,7 @@ export function tryToWinPrize(game: Game) {
   if(determinant === 0 ){
     console.log(`Game: ${game.gameId} is singular, cannot be solved`)
     return {
-      wonPrize,
-      na: null,
-      nb: null
+      wonPrize: false
     }
   }
 
@@ -36,20 +41,68 @@ export function tryToWinPrize(game: Game) {
     const solution = mathjs.lusolve(A, B);
 
     // Extract Presses from solution
-    const na = solution[0][0];
-    const nb = solution[1][0];
+    const na = Math.round(solution[0][0]);
+    const nb = Math.round(solution[1][0]);
+
+
+    if(
+      (na > 100 || nb > 100)
+      && has100Limit
+    )
+    {
+      console.info(`Game ${game.gameId} was more than 100 presses. A: ${na}; B: ${nb}`)
+      return {
+        wonPrize: false,
+        na,
+        nb
+      }
+    }
+
+    // Double check the solution (since we round we want to be 
+    // sure that it's a "valid" rounding only fixing minor errors
+    // JS floating point math and not a significant roundings due
+    // to na,nb being legitimate decimals which would indicate
+    // there is not a whole number of button presses.)
+    const calculatedX = na * game.buttons.a.x + nb * game.buttons.b.x;
+    const calculatedY = na * game.buttons.a.y + nb * game.buttons.b.y;
+
+    if (
+      Math.abs(calculatedX - game.prizeLocation.x) > 1 
+      || Math.abs(calculatedY - game.prizeLocation.y) > 1
+    ) {
+      console.info(`Game ${game.gameId} solution was invalid after rounding. Calculated X: ${calculatedX}, Y: ${calculatedY}`);
+      return {
+      wonPrize: false,
+      na,
+      nb
+      };
+    }
+
+    // Rule Out Negative Values
+    if (na < 0 || nb < 0) {
+      console.info(`Game ${game.gameId} solution had negative values. na: ${na}, nb: ${nb}`);
+      return {
+      wonPrize: false,
+      na,
+      nb
+      };
+    }
+
+    const aButtonCosts = na * costs.a;
+    const bButtonCosts = nb * costs.b;
   
     return {
       wonPrize: true,
       na: Math.round(na),
       nb: Math.round(nb),
+      aButtonCosts,
+      bButtonCosts,
+      totalCost: aButtonCosts + bButtonCosts
     };
   } catch(e: any){
     console.error('An error occured while solving the system')
     return {
-      wonPrize,
-      na: null,
-      nb: null
+     wonPrize: false
     }
   }
 }

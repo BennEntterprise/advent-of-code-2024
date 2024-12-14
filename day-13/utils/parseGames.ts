@@ -1,5 +1,7 @@
 import { Game } from "../types";
 
+const scalarAdjustment = process.env.PART_2 ? 10000000000000: 1
+
 export function parseGames(gameSpecs: Array<Array<string>>): Array<Game> {
   return gameSpecs.map((gs: Array<string>, index: number) => {
     const [directiveA, directiveB, prizeLocation] = gs;
@@ -30,8 +32,8 @@ export function parseGames(gameSpecs: Array<Array<string>>): Array<Game> {
         },
       },
       prizeLocation: {
-        x: parseInt(xVal),
-        y: parseInt(yVal)
+        x: parseInt(xVal) + scalarAdjustment,
+        y: parseInt(yVal) + scalarAdjustment
       }
     } as Game;
   });

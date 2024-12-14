@@ -2,13 +2,10 @@ import fs from "fs";
 import { parseGames } from "./utils/parseGames";
 import { tryToWinPrize } from './utils/tryToWinPrize'
 import type { GameResult } from "./types";
-const consts = {
-  a: 3,
-  b: 1,
-};
 
 try {
-  const input = fs.readFileSync(`${__dirname}/sample-input.txt`, "utf8");
+  console.log(process.env.PART_2)
+  const input = fs.readFileSync(`${__dirname}/puzzle-input.txt`, "utf8");
 
   const gameBlobs = input.split("\n\n");
 
@@ -19,17 +16,22 @@ try {
 
   const results: GameResult[] = []
   for(let game of games){
-    results.push(tryToWinPrize(game))
+    const result = tryToWinPrize(game);
+    // console.log(result)
+    results.push(result)
   }
 
   // For each result, if it's a winner, add to the total cost
   const totalCost: number = results.reduce((acc, currValue, currentIndex, entireArray ) => {
-    if(currValue.wonPrize){
-      // Return the accumulator + the prize cost
+    if(currValue.wonPrize && currValue.wonPrize){
+      return acc+= (currValue.totalCost || 0)
     }
     return acc
   },0)
-  console.log(results)
+
+  console.log({
+    totalCost
+  })
 } catch (error) {
   console.error(error);
 }

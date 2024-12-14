@@ -17,7 +17,10 @@ export type Game = {
 };
 
 export type GameResult = {
-  wonPrize: boolean;
-  na: number | null;
-  nb: number | null;
+  wonPrize?: boolean;
+  na?: number;
+  nb?: number;
+  aButtonCosts?: number;
+  bButtonCosts?: number;
+  totalCost?: number;
 };
