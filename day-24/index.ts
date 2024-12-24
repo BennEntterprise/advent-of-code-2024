@@ -8,7 +8,7 @@ import { buildGraph } from './utils/buildGraph';
 const sampleExpectedResult = 4;
 
 try {
-  const inputLines = fs.readFileSync(`./sample-input.txt`, 'utf8').split('\n')
+  const inputLines = fs.readFileSync(`./puzzle-input.txt`, 'utf8').split('\n')
   
   const graph = buildGraph(inputLines)
   if(!validateGraph(graph)){
@@ -22,3 +22,5 @@ try {
   console.error(e)
 }
 
+// Results 
+// 0 -> Incorrect
